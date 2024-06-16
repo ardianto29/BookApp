@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const editModal = document.getElementById("editModal");
   const closeModal = document.querySelector(".close");
   const editForm = document.getElementById("formEditBuku");
+  const resetBtn = searchForm.querySelector(".reset-btn");
 
   let books = JSON.parse(localStorage.getItem("books")) || [];
   let editingBookId = null;
@@ -169,9 +170,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
+  // Function to reset search and show all books
+  const resetSearch = () => {
+    searchForm.reset();
+    renderBooks();
+  };
+
   // Event listeners
   bookForm.addEventListener("submit", addOrEditBook);
   searchForm.addEventListener("submit", searchBooks);
+  resetBtn.addEventListener("click", resetSearch);
   editForm.addEventListener("submit", saveEditedBook);
   closeModal.addEventListener("click", () => {
     editModal.style.display = "none";
