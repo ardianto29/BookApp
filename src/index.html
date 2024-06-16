@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Icons"
+      rel="stylesheet" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- header -->
+    <header>
+      <h1>Bookshelf Apps</h1>
+    </header>
+
+    <!-- isi -->
+    <main class="wrapper">
+      <div class="top">
+        <div class="form-container">
+          <h2 class="title">Tambah Buku Baru</h2>
+          <form action="" id="formDataBuku" method="post">
+            <div class="row">
+              <div class="form-group">
+                <input type="text" name="judul" id="judul" placeholder="" />
+                <label for="judul">Judul</label>
+              </div>
+              <div class="form-group">
+                <input type="text" name="penulis" id="penulis" placeholder="" />
+                <label for="penulis">Penulis</label>
+              </div>
+              <div class="form-group">
+                <select name="genre" id="genre" required>
+                  <option value="" disabled selected>Pilih Genre</option>
+                  <option value="fiksi">Fiksi</option>
+                  <option value="non-fiksi">Non-Fiksi</option>
+                  <option value="misteri">Misteri</option>
+                  <option value="fantasi">Fantasi</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <input
+                  type="number"
+                  name="tahun"
+                  id="tahun"
+                  placeholder=""
+                  required />
+                <label for="tahun">Tahun</label>
+              </div>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" name="isRead" id="isRead" placeholder="" />
+              <label for="isRead">Sudah selesai dibaca</label>
+            </div>
+            <button type="submit" class="submit-btn">Tambah Buku</button>
+          </form>
+        </div>
+        <div class="cari-container">
+          <h2 class="title">Cari Buku</h2>
+          <form id="formSearch" action="" method="post">
+            <div class="form-group">
+              <input
+                type="text"
+                name="pencarian"
+                id="pencarian"
+                placeholder="" />
+              <label for="pencarian">Cari Buku</label>
+            </div>
+            <div class="form-search-bottom">
+              <button type="reset" class="reset-btn">
+                <i class="material-icons">refresh</i>
+              </button>
+              <button type="submit" class="cari-btn">
+                <i class="material-icons">search</i>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <section class="filter-section">
+        <ul class="tabs-category">
+          <li class="tab-item">
+            <button class="btn active" data-target="#allBooks">Semua</button>
+          </li>
+          <li class="tab-item">
+            <button class="btn" data-target="#unCompletedBooks">Belum</button>
+          </li>
+          <li class="tab-item">
+            <button class="btn" data-target="#completedBooks">Selesai</button>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <div class="tab-pane active book-list" id="allBooks"></div>
+          <div class="tab-pane book-list" id="unCompletedBooks"></div>
+          <div class="tab-pane book-list" id="completedBooks"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Edit Modal -->
+    <div class="modal" id="editModal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Edit Buku</h2>
+        <form id="formEditBuku" method="post">
+          <div class="row">
+            <div class="form-group">
+              <input
+                type="text"
+                name="editJudul"
+                id="editJudul"
+                placeholder="" />
+              <label for="editJudul">Judul</label>
+            </div>
+            <div class="form-group">
+              <input
+                type="text"
+                name="editPenulis"
+                id="editPenulis"
+                placeholder="" />
+              <label for="editPenulis">Penulis</label>
+            </div>
+            <div class="form-group">
+              <select name="editGenre" id="editGenre" required>
+                <option value="" disabled selected>Pilih Genre</option>
+                <option value="fiksi">Fiksi</option>
+                <option value="non-fiksi">Non-Fiksi</option>
+                <option value="misteri">Misteri</option>
+                <option value="fantasi">Fantasi</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <input
+                type="number"
+                name="editTahun"
+                id="editTahun"
+                placeholder=""
+                required />
+              <label for="editTahun">Tahun</label>
+            </div>
+          </div>
+          <div class="form-check">
+            <input
+              type="checkbox"
+              name="editIsRead"
+              id="editIsRead"
+              placeholder="" />
+            <label for="editIsRead">Sudah selesai dibaca</label>
+          </div>
+          <button type="submit" class="submit-btn">Simpan Perubahan</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="./js/main.js"></script>
+  </body>
+</html>
