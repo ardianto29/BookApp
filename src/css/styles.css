@@ -271,7 +271,7 @@ header h1 {
 }
 
 .book-item {
-  width: 300px;
+  width: 500px;
   background-color: #fff;
   padding: 2rem;
   border-radius: 1rem;
@@ -279,6 +279,7 @@ header h1 {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  margin-left: 3rem;
 }
 
 .book-item h3 {
