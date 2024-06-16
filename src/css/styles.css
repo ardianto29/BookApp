@@ -221,11 +221,12 @@ header h1 {
 
 .filter-section {
   margin-top: 2rem;
+  max-width: 100%; /* Mengatur maksimum lebar untuk responsif */
 }
 
 .tabs-category {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap; /* Agar item dapat pindah baris di layar kecil */
   justify-content: center;
   gap: 1rem;
   list-style-type: none;
@@ -241,6 +242,9 @@ header h1 {
   border: none;
   cursor: pointer;
   transition: 0.3s;
+  width: 100%; /* Mengisi lebar penuh */
+  text-align: center; /* Pusat teks */
+  margin-bottom: 0.5rem; /* Ruang antara tombol */
 }
 
 .tabs-category .btn.active {
@@ -250,31 +254,27 @@ header h1 {
 
 .tab-content {
   margin-top: 2rem;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(2, 1fr));
   gap: 1rem;
 }
 
 .tab-pane {
   display: none;
-  flex-wrap: wrap;
   gap: 1rem;
 }
 
 .tab-pane.active {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
 }
 
 .book-item {
-  width: 500px;
   background-color: #fff;
   padding: 2rem;
   border-radius: 1rem;
   box-shadow: 0 4px 8px rgba(15, 23, 42, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-left: 3rem;
 }
 
 .book-item h3 {
@@ -290,12 +290,13 @@ header h1 {
 
 .buttons {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 1rem;
 }
 
 .buttons .btn {
-  flex: 1;
+  flex: 1 0 100%; /* Mengisi lebar penuh */
   background-color: var(--primary);
   color: #fff;
   padding: 0.5rem;
@@ -312,15 +313,14 @@ header h1 {
   background-color: hsl(217, 91%, 50%);
 }
 
-/* Responsive design for smaller screens */
+/* Responsif untuk layar kecil */
 @media (max-width: 768px) {
-  .top {
-    flex-direction: column;
+  .tab-content {
+    grid-template-columns: 1fr;
   }
 
-  .form-container,
-  .cari-container {
-    margin: 0;
+  .tab-pane.active {
+    grid-template-columns: 1fr;
   }
 }
 
