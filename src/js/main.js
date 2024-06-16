@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const bookForm = document.getElementById("formDataBuku");
   const searchForm = document.getElementById("formSearch");
+  const searchInput = document.getElementById("pencarian");
   const allBooksContainer = document.getElementById("allBooks");
   const uncompletedBooksContainer = document.getElementById("unCompletedBooks");
   const completedBooksContainer = document.getElementById("completedBooks");
@@ -67,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Function to render books based on the active tab
-  const renderBooks = () => {
+  const renderBooks = (filteredBooks = books) => {
     const activeTab = document.querySelector(".tabs-category .btn.active");
     const activeTabId = activeTab.dataset.target;
 
@@ -77,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
     completedBooksContainer.innerHTML = "";
 
     // Filter books based on the active tab
-    const filteredBooks = books.filter((book) => {
+    const booksToRender = filteredBooks.filter((book) => {
       if (activeTabId === "#allBooks") {
         return true; // Show all books
       } else if (activeTabId === "#unCompletedBooks") {
@@ -88,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Render filtered books to their respective containers
-    filteredBooks.forEach((book) => {
+    booksToRender.forEach((book) => {
       const bookElement = createBookElement(book);
       allBooksContainer.appendChild(bookElement);
       if (book.isRead) {
@@ -148,26 +149,13 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Function to search books
-  const searchBooks = (event) => {
-    event.preventDefault();
-    const searchTerm = searchForm.pencarian.value.toLowerCase();
+  const searchBooks = () => {
+    const searchTerm = searchInput.value.toLowerCase();
     const filteredBooks = books.filter((book) =>
       book.judul.toLowerCase().includes(searchTerm)
     );
 
-    allBooksContainer.innerHTML = "";
-    uncompletedBooksContainer.innerHTML = "";
-    completedBooksContainer.innerHTML = "";
-
-    filteredBooks.forEach((book) => {
-      const bookElement = createBookElement(book);
-      allBooksContainer.appendChild(bookElement);
-      if (book.isRead) {
-        completedBooksContainer.appendChild(bookElement.cloneNode(true));
-      } else {
-        uncompletedBooksContainer.appendChild(bookElement.cloneNode(true));
-      }
-    });
+    renderBooks(filteredBooks);
   };
 
   // Function to reset search and show all books
@@ -178,7 +166,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Event listeners
   bookForm.addEventListener("submit", addOrEditBook);
-  searchForm.addEventListener("submit", searchBooks);
+  searchForm.addEventListener("submit", (e) => e.preventDefault()); // Prevent form submission
+  searchInput.addEventListener("input", searchBooks);
   resetBtn.addEventListener("click", resetSearch);
   editForm.addEventListener("submit", saveEditedBook);
   closeModal.addEventListener("click", () => {
