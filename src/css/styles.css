@@ -6,15 +6,10 @@
   --bg-body: rgb(248, 250, 252);
   --paragraph-color: rgb(51, 65, 85);
   --dark: rgb(15, 23, 42);
-  --gray-100: #f8f9fa;
+  --green: #28a745;
+  --red: #dc3545;
   --gray-200: #e9ecef;
-  --gray-300: #dee2e6;
-  --gray-400: #ced4da;
-  --gray-500: #adb5bd;
-  --gray-600: #6c757d;
   --gray-700: #495057;
-  --gray-800: #343a40;
-  --gray-900: #212529;
 }
 
 * {
@@ -366,4 +361,37 @@ header h1 {
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+
+.notification {
+  display: none;
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 8px rgba(15, 23, 42, 0.1);
+  z-index: 1001;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+.notification.success {
+  background-color: var(--green); /* Green */
+  color: #fff;
+}
+
+.notification.primary {
+  background-color: var(--primary); /* Blue */
+  color: #fff;
+}
+
+.notification.danger {
+  background-color: var(--red); /* Red */
+  color: #fff;
+}
+
+.notification.show {
+  display: block;
+  opacity: 1;
+  visibility: visible;
 }

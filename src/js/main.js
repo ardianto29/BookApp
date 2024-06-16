@@ -13,12 +13,23 @@ document.addEventListener("DOMContentLoaded", () => {
   let books = JSON.parse(localStorage.getItem("books")) || [];
   let editingBookId = null;
 
-  // Function to save books to localStorage
   const saveBooks = () => {
     localStorage.setItem("books", JSON.stringify(books));
   };
 
-  // Function to create a book element
+  const showNotification = (message, type) => {
+    const notification = document.createElement("div");
+    notification.textContent = message;
+    notification.className = `notification ${type}`;
+    notification.style.display = "block";
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+      notification.style.display = "none";
+      document.body.removeChild(notification);
+    }, 2000);
+  };
+
   const createBookElement = (book) => {
     const bookElement = document.createElement("div");
     bookElement.classList.add("book-item");
@@ -29,15 +40,14 @@ document.addEventListener("DOMContentLoaded", () => {
       <p>Tahun: ${book.tahun}</p>
       <p>Status: ${book.isRead ? "Sudah dibaca" : "Belum dibaca"}</p>
       <div class="buttons">
-        <button class="btn edit-btn">Edit</button>
-        <button class="btn delete-btn">Hapus</button>
+        <button class="btn edit-btn" style="background-color:green">Edit</button>
+        <button class="btn delete-btn" style="background-color:red">Hapus</button>
         <button class="btn toggle-read-btn">
           ${book.isRead ? "Tandai belum dibaca" : "Tandai sudah dibaca"}
         </button>
       </div>
     `;
 
-    // Add event listener for "Edit" button
     bookElement.querySelector(".edit-btn").addEventListener("click", () => {
       editingBookId = book.id;
       document.getElementById("editJudul").value = book.judul;
@@ -48,47 +58,44 @@ document.addEventListener("DOMContentLoaded", () => {
       editModal.style.display = "block";
     });
 
-    // Add event listener for "Delete" button
     bookElement.querySelector(".delete-btn").addEventListener("click", () => {
       books = books.filter((b) => b.id !== book.id);
       saveBooks();
       renderBooks();
+      showNotification("Buku berhasil dihapus!", "danger");
     });
 
-    // Add event listener for "Toggle Read" button
     bookElement
       .querySelector(".toggle-read-btn")
       .addEventListener("click", () => {
         book.isRead = !book.isRead;
         saveBooks();
         renderBooks();
+        const statusMessage = book.isRead ? "Sudah dibaca!" : "Belum dibaca!";
+        showNotification(`Buku berhasil ditandai ${statusMessage}`, "success");
       });
 
     return bookElement;
   };
 
-  // Function to render books based on the active tab
   const renderBooks = (filteredBooks = books) => {
     const activeTab = document.querySelector(".tabs-category .btn.active");
     const activeTabId = activeTab.dataset.target;
 
-    // Clear all book containers
     allBooksContainer.innerHTML = "";
     uncompletedBooksContainer.innerHTML = "";
     completedBooksContainer.innerHTML = "";
 
-    // Filter books based on the active tab
     const booksToRender = filteredBooks.filter((book) => {
       if (activeTabId === "#allBooks") {
-        return true; // Show all books
+        return true;
       } else if (activeTabId === "#unCompletedBooks") {
-        return !book.isRead; // Show only unread books
+        return !book.isRead;
       } else if (activeTabId === "#completedBooks") {
-        return book.isRead; // Show only read books
+        return book.isRead;
       }
     });
 
-    // Render filtered books to their respective containers
     booksToRender.forEach((book) => {
       const bookElement = createBookElement(book);
       allBooksContainer.appendChild(bookElement);
@@ -100,8 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
-  // Function to add or edit a book
-  const addOrEditBook = (event) => {
+  const addBook = (event) => {
     event.preventDefault();
     const newBook = {
       id: editingBookId || Date.now(),
@@ -113,14 +119,14 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     if (editingBookId !== null) {
-      // Edit existing book
       books = books.map((book) =>
         book.id === editingBookId ? { ...newBook, id: editingBookId } : book
       );
+      showNotification("Buku berhasil diperbarui!", "success");
       editingBookId = null;
     } else {
-      // Add new book
       books.push(newBook);
+      showNotification("Buku berhasil ditambahkan!", "primary");
     }
 
     saveBooks();
@@ -128,8 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
     bookForm.reset();
   };
 
-  // Function to save edited book
-  const saveEditedBook = (event) => {
+  const editBook = (event) => {
     event.preventDefault();
     const editedBook = {
       id: editingBookId,
@@ -139,37 +144,38 @@ document.addEventListener("DOMContentLoaded", () => {
       tahun: editForm.editTahun.value,
       isRead: editForm.editIsRead.checked,
     };
+
     books = books.map((book) =>
       book.id === editingBookId ? editedBook : book
     );
     saveBooks();
     renderBooks();
-    editingBookId = null;
+    showNotification("Buku berhasil diperbarui!", "success");
+    editForm.reset();
     editModal.style.display = "none";
   };
 
-  // Function to search books
   const searchBooks = () => {
     const searchTerm = searchInput.value.toLowerCase();
-    const filteredBooks = books.filter((book) =>
-      book.judul.toLowerCase().includes(searchTerm)
+    const filteredBooks = books.filter(
+      (book) =>
+        book.judul.toLowerCase().includes(searchTerm) ||
+        book.penulis.toLowerCase().includes(searchTerm) ||
+        book.genre.toLowerCase().includes(searchTerm) ||
+        book.tahun.toString().includes(searchTerm)
     );
 
     renderBooks(filteredBooks);
   };
 
-  // Function to reset search and show all books
-  const resetSearch = () => {
-    searchForm.reset();
-    renderBooks();
-  };
-
-  // Event listeners
-  bookForm.addEventListener("submit", addOrEditBook);
+  bookForm.addEventListener("submit", addBook);
+  editForm.addEventListener("submit", editBook);
   searchForm.addEventListener("submit", (e) => e.preventDefault()); // Prevent form submission
-  searchInput.addEventListener("input", searchBooks);
-  resetBtn.addEventListener("click", resetSearch);
-  editForm.addEventListener("submit", saveEditedBook);
+  resetBtn.addEventListener("click", () => {
+    searchInput.value = "";
+    renderBooks();
+  });
+
   closeModal.addEventListener("click", () => {
     editModal.style.display = "none";
   });
@@ -184,18 +190,16 @@ document.addEventListener("DOMContentLoaded", () => {
     .querySelector(".tabs-category")
     .addEventListener("click", (event) => {
       if (event.target.classList.contains("btn")) {
-        // Remove 'active' class from all buttons
         document
           .querySelectorAll(".btn")
           .forEach((btn) => btn.classList.remove("active"));
-
-        // Add 'active' class to the clicked button
         event.target.classList.add("active");
-
-        // Render books based on the active tab
         renderBooks();
       }
     });
+
+  // Event listener untuk pencarian real-time
+  searchInput.addEventListener("input", searchBooks);
 
   // Initial render
   renderBooks();
