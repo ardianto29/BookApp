@@ -34,27 +34,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const bookElement = document.createElement("div");
     bookElement.classList.add("book-item");
     bookElement.innerHTML = `
-      <h3>${book.judul}</h3>
-      <p>Penulis: ${book.penulis}</p>
+      <h3>${book.title}</h3>
+      <p>Penulis: ${book.author}</p>
       <p>Genre: ${book.genre}</p>
-      <p>Tahun: ${book.tahun}</p>
-      <p>Status: ${book.isRead ? "Sudah dibaca" : "Belum dibaca"}</p>
+      <p>Tahun: ${book.year}</p>
+      <p>Status: ${book.isComplete ? "Sudah dibaca" : "Belum dibaca"}</p>
       <div class="buttons">
         <button class="btn edit-btn" style="background-color:green">Edit</button>
         <button class="btn delete-btn" style="background-color:red">Hapus</button>
         <button class="btn toggle-read-btn">
-          ${book.isRead ? "Tandai belum dibaca" : "Tandai sudah dibaca"}
+          ${book.isComplete ? "Tandai belum dibaca" : "Tandai sudah dibaca"}
         </button>
       </div>
     `;
 
     bookElement.querySelector(".edit-btn").addEventListener("click", () => {
       editingBookId = book.id;
-      document.getElementById("editJudul").value = book.judul;
-      document.getElementById("editPenulis").value = book.penulis;
+      document.getElementById("editJudul").value = book.title;
+      document.getElementById("editPenulis").value = book.author;
       document.getElementById("editGenre").value = book.genre;
-      document.getElementById("editTahun").value = book.tahun;
-      document.getElementById("editIsRead").checked = book.isRead;
+      document.getElementById("editTahun").value = book.year;
+      document.getElementById("editIsRead").checked = book.isComplete;
       editModal.style.display = "block";
     });
 
@@ -68,10 +68,12 @@ document.addEventListener("DOMContentLoaded", () => {
     bookElement
       .querySelector(".toggle-read-btn")
       .addEventListener("click", () => {
-        book.isRead = !book.isRead;
+        book.isComplete = !book.isComplete;
         saveBooks();
         renderBooks();
-        const statusMessage = book.isRead ? "Sudah dibaca!" : "Belum dibaca!";
+        const statusMessage = book.isComplete
+          ? "Sudah dibaca!"
+          : "Belum dibaca!";
         showNotification(`Buku berhasil ditandai ${statusMessage}`, "success");
       });
 
@@ -90,16 +92,16 @@ document.addEventListener("DOMContentLoaded", () => {
       if (activeTabId === "#allBooks") {
         return true;
       } else if (activeTabId === "#unCompletedBooks") {
-        return !book.isRead;
+        return !book.isComplete;
       } else if (activeTabId === "#completedBooks") {
-        return book.isRead;
+        return book.isComplete;
       }
     });
 
     booksToRender.forEach((book) => {
       const bookElement = createBookElement(book);
       allBooksContainer.appendChild(bookElement);
-      if (book.isRead) {
+      if (book.isComplete) {
         completedBooksContainer.appendChild(bookElement.cloneNode(true));
       } else {
         uncompletedBooksContainer.appendChild(bookElement.cloneNode(true));
@@ -111,11 +113,11 @@ document.addEventListener("DOMContentLoaded", () => {
     event.preventDefault();
     const newBook = {
       id: editingBookId || Date.now(),
-      judul: bookForm.judul.value,
-      penulis: bookForm.penulis.value,
+      title: bookForm.judul.value,
+      author: bookForm.penulis.value,
       genre: bookForm.genre.value,
-      tahun: bookForm.tahun.value,
-      isRead: bookForm.isRead.checked,
+      year: parseInt(bookForm.tahun.value),
+      isComplete: bookForm.isRead.checked,
     };
 
     if (editingBookId !== null) {
@@ -138,11 +140,11 @@ document.addEventListener("DOMContentLoaded", () => {
     event.preventDefault();
     const editedBook = {
       id: editingBookId,
-      judul: editForm.editJudul.value,
-      penulis: editForm.editPenulis.value,
+      title: editForm.editJudul.value,
+      author: editForm.editPenulis.value,
       genre: editForm.editGenre.value,
-      tahun: editForm.editTahun.value,
-      isRead: editForm.editIsRead.checked,
+      year: parseInt(editForm.editTahun.value),
+      isComplete: editForm.editIsRead.checked,
     };
 
     books = books.map((book) =>
@@ -159,10 +161,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchTerm = searchInput.value.toLowerCase();
     const filteredBooks = books.filter(
       (book) =>
-        book.judul.toLowerCase().includes(searchTerm) ||
-        book.penulis.toLowerCase().includes(searchTerm) ||
+        book.title.toLowerCase().includes(searchTerm) ||
+        book.author.toLowerCase().includes(searchTerm) ||
         book.genre.toLowerCase().includes(searchTerm) ||
-        book.tahun.toString().includes(searchTerm)
+        book.year.toString().includes(searchTerm)
     );
 
     renderBooks(filteredBooks);
