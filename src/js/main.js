@@ -65,13 +65,29 @@ document.addEventListener("DOMContentLoaded", () => {
     return bookElement;
   };
 
-  // Function to render books
+  // Function to render books based on the active tab
   const renderBooks = () => {
+    const activeTab = document.querySelector(".tabs-category .btn.active");
+    const activeTabId = activeTab.dataset.target;
+
+    // Clear all book containers
     allBooksContainer.innerHTML = "";
     uncompletedBooksContainer.innerHTML = "";
     completedBooksContainer.innerHTML = "";
 
-    books.forEach((book) => {
+    // Filter books based on the active tab
+    const filteredBooks = books.filter((book) => {
+      if (activeTabId === "#allBooks") {
+        return true; // Show all books
+      } else if (activeTabId === "#unCompletedBooks") {
+        return !book.isRead; // Show only unread books
+      } else if (activeTabId === "#completedBooks") {
+        return book.isRead; // Show only read books
+      }
+    });
+
+    // Render filtered books to their respective containers
+    filteredBooks.forEach((book) => {
       const bookElement = createBookElement(book);
       allBooksContainer.appendChild(bookElement);
       if (book.isRead) {
@@ -94,10 +110,14 @@ document.addEventListener("DOMContentLoaded", () => {
       isRead: bookForm.isRead.checked,
     };
 
-    if (editingBookId) {
-      books = books.map((book) => (book.id === editingBookId ? newBook : book));
+    if (editingBookId !== null) {
+      // Edit existing book
+      books = books.map((book) =>
+        book.id === editingBookId ? { ...newBook, id: editingBookId } : book
+      );
       editingBookId = null;
     } else {
+      // Add new book
       books.push(newBook);
     }
 
@@ -109,23 +129,21 @@ document.addEventListener("DOMContentLoaded", () => {
   // Function to save edited book
   const saveEditedBook = (event) => {
     event.preventDefault();
-    if (editingBookId !== null) {
-      const editedBook = {
-        id: editingBookId,
-        judul: editForm.editJudul.value,
-        penulis: editForm.editPenulis.value,
-        genre: editForm.editGenre.value,
-        tahun: editForm.editTahun.value,
-        isRead: editForm.editIsRead.checked,
-      };
-      books = books.map((book) =>
-        book.id === editingBookId ? editedBook : book
-      );
-      saveBooks();
-      renderBooks();
-      editingBookId = null;
-      editModal.style.display = "none";
-    }
+    const editedBook = {
+      id: editingBookId,
+      judul: editForm.editJudul.value,
+      penulis: editForm.editPenulis.value,
+      genre: editForm.editGenre.value,
+      tahun: editForm.editTahun.value,
+      isRead: editForm.editIsRead.checked,
+    };
+    books = books.map((book) =>
+      book.id === editingBookId ? editedBook : book
+    );
+    saveBooks();
+    renderBooks();
+    editingBookId = null;
+    editModal.style.display = "none";
   };
 
   // Function to search books
@@ -151,6 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
+  // Event listeners
   bookForm.addEventListener("submit", addOrEditBook);
   searchForm.addEventListener("submit", searchBooks);
   editForm.addEventListener("submit", saveEditedBook);
@@ -159,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   window.addEventListener("click", (event) => {
-    if (event.target == editModal) {
+    if (event.target === editModal) {
       editModal.style.display = "none";
     }
   });
@@ -168,18 +187,19 @@ document.addEventListener("DOMContentLoaded", () => {
     .querySelector(".tabs-category")
     .addEventListener("click", (event) => {
       if (event.target.classList.contains("btn")) {
+        // Remove 'active' class from all buttons
         document
           .querySelectorAll(".btn")
           .forEach((btn) => btn.classList.remove("active"));
+
+        // Add 'active' class to the clicked button
         event.target.classList.add("active");
-        document
-          .querySelectorAll(".tab-pane")
-          .forEach((tab) => tab.classList.remove("active"));
-        document
-          .querySelector(event.target.dataset.target)
-          .classList.add("active");
+
+        // Render books based on the active tab
+        renderBooks();
       }
     });
 
+  // Initial render
   renderBooks();
 });
