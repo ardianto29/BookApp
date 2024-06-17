@@ -12,7 +12,7 @@ Aplikasi ini untuk menyimpan buku dibangun dengan memanfaatkan Browser Object Mo
 8. Manfaatkan localStorage dalam Menyimpan Data Buku.
 
 ## Tampilan
-![] (./image.png)
+![](./image.png)
 
 ## Link
 
